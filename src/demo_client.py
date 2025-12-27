@@ -158,10 +158,9 @@ def create_chart(df: pd.DataFrame, title: str, y_label: str = "Value") -> str:
             tickfont=dict(color="#888")
         ),
         yaxis=dict(
-            title=y_label,
+            title=dict(text=y_label, font=dict(color="#888")),
             gridcolor="rgba(255,255,255,0.1)",
-            tickfont=dict(color="#888"),
-            titlefont=dict(color="#888")
+            tickfont=dict(color="#888")
         ),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
