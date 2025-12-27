@@ -27,7 +27,7 @@ MINERVA_APP_URL = "https://minerva.x-trillion.com"
 # Page config
 st.set_page_config(
     page_title="Minerva | X-Trillion",
-    page_icon="💎",
+    page_icon="assets/minerva.png",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -252,11 +252,8 @@ def render_agent_card(agent, assets_dir):
 def main():
     # Get asset paths
     assets_dir = Path(__file__).parent / "assets"
-    video_path = assets_dir / "minerva from xtrillion.mp4"
-
-    # Track if video has played
-    if "video_played" not in st.session_state:
-        st.session_state.video_played = False
+    # Video served from Cloudflare R2 CDN for fast loading
+    minerva_video = "https://assets.x-trillion.com/minerva-welcome.mp4"
 
     # Track demo response (replaces video)
     if "demo_response" not in st.session_state:
@@ -299,153 +296,83 @@ def main():
         .agent-card-mini .agent-role {
             font-size: 0.6rem;
         }
-        /* Crop video to remove white bars */
+        /* Video styling */
         [data-testid="stVideo"] {
-            overflow: hidden !important;
             border-radius: 12px !important;
-            max-height: 450px !important;
-        }
-        [data-testid="stVideo"] > div {
             overflow: hidden !important;
         }
         [data-testid="stVideo"] video {
             border-radius: 12px !important;
-            object-fit: cover !important;
-            transform: scale(1.6) !important;
+            width: 100% !important;
+            height: auto !important;
+            max-height: 600px !important;
+            object-fit: contain !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
-    # Hero Section - Video/Chart (left) + Title & Agents (right)
-    if not st.session_state.video_played and video_path.exists():
-        col_left, col_right = st.columns([1, 1])
+    # Hero Section - Image/Chart (left) + Title & Agents (right)
+    col_left, col_right = st.columns([1, 1])
 
-        with col_left:
-            # Handle pending query - fetch data with spinner in left column
-            if st.session_state.get("pending_query"):
-                query = st.session_state.pending_query
-                st.session_state.pending_query = None
-                with st.spinner("Fetching data..."):
-                    text, chart_html, agent_name = get_demo_response(query)
-                st.session_state.demo_response = (text, chart_html, agent_name, query)
-                st.rerun()
+    with col_left:
+        # Handle pending query - fetch data with spinner in left column
+        if st.session_state.get("pending_query"):
+            query = st.session_state.pending_query
+            st.session_state.pending_query = None
+            with st.spinner("Fetching data..."):
+                text, chart_html, agent_name = get_demo_response(query)
+            st.session_state.demo_response = (text, chart_html, agent_name, query)
+            st.rerun()
 
-            # Show chart if we have a response, otherwise show video
-            if st.session_state.demo_response:
-                text, chart_html, agent_name, query = st.session_state.demo_response
+        # Show chart if we have a response, otherwise show Minerva image
+        if st.session_state.demo_response:
+            text, chart_html, agent_name, query = st.session_state.demo_response
 
-                # Compact response display
-                st.markdown(f"""
-                <div style="background: rgba(102, 126, 234, 0.2); padding: 8px 12px; border-radius: 8px; margin-bottom: 5px;">
-                    <strong style="color: #667eea;">You:</strong>
-                    <span style="color: #fff;"> {query}</span>
-                </div>
-                <div style="margin-bottom: 5px;">
-                    <strong style="color: #888;">{agent_name}:</strong>
-                    <span style="color: #ccc; font-size: 0.85rem;">{text.split(chr(10))[0][:100]}...</span>
-                </div>
-                """, unsafe_allow_html=True)
-
-                # Chart
-                if chart_html:
-                    st.components.v1.html(chart_html, height=380)
-            else:
-                st.video(str(video_path), autoplay=True, muted=False)
-
-        with col_right:
-            st.markdown("""
-            <div style="padding: 5px 0;">
-                <h1 style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 5px 0;">MINERVA</h1>
-                <p style="color: #888; font-size: 0.85rem; margin: 0 0 10px 0;">AI-Powered Financial Intelligence from X-Trillion</p>
+            # Compact response display
+            st.markdown(f"""
+            <div style="background: rgba(102, 126, 234, 0.2); padding: 8px 12px; border-radius: 8px; margin-bottom: 5px;">
+                <strong style="color: #667eea;">You:</strong>
+                <span style="color: #fff;"> {query}</span>
+            </div>
+            <div style="margin-bottom: 5px;">
+                <strong style="color: #888;">{agent_name}:</strong>
+                <span style="color: #ccc; font-size: 0.85rem;">{text.split(chr(10))[0][:100]}...</span>
             </div>
             """, unsafe_allow_html=True)
 
-            # Agents grid 4x2
-            for row in range(2):
-                cols = st.columns(4)
-                for i, col in enumerate(cols):
-                    agent_idx = row * 4 + i
-                    if agent_idx < len(agents):
-                        with col:
-                            st.markdown(render_agent_card(agents[agent_idx], assets_dir), unsafe_allow_html=True)
+            # Chart
+            if chart_html:
+                st.components.v1.html(chart_html, height=380)
+        else:
+            # Show Minerva video from R2 CDN
+            st.video(minerva_video, autoplay=True, loop=True, muted=True)
 
-            # Spacing before chat input
-            st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
-
-            # Chat input under agents
-            prompt = st.chat_input("Try: 'Show me US inflation' or 'What's the unemployment rate?'", key="chat_video")
-            if prompt:
-                if DEMO_AVAILABLE:
-                    st.session_state.pending_query = prompt
-                    st.rerun()
-    else:
-        # After video played - show full width layout
+    with col_right:
         st.markdown("""
-        <div style="text-align: center; padding: 10px 0;">
-            <h1 style="font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 5px 0;">MINERVA</h1>
-            <p style="color: #888; font-size: 1rem; margin: 0;">AI-Powered Financial Intelligence from X-Trillion</p>
+        <div style="padding: 5px 0;">
+            <h1 style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 5px 0;">MINERVA</h1>
+            <p style="color: #888; font-size: 0.85rem; margin: 0 0 10px 0;">AI-Powered Financial Intelligence from X-Trillion</p>
         </div>
         """, unsafe_allow_html=True)
 
-        # Stats row
-        st.markdown("""
-        <div style="display: flex; justify-content: center; gap: 50px; margin: 15px 0;">
-            <div class="stat-box">
-                <div class="stat-number">12+</div>
-                <div class="stat-label">AI Agents</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number">190+</div>
-                <div class="stat-label">Countries</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number">1000s</div>
-                <div class="stat-label">Indicators</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number">Real-time</div>
-                <div class="stat-label">Data</div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Agents grid 4x2
+        for row in range(2):
+            cols = st.columns(4)
+            for i, col in enumerate(cols):
+                agent_idx = row * 4 + i
+                if agent_idx < len(agents):
+                    with col:
+                        st.markdown(render_agent_card(agents[agent_idx], assets_dir), unsafe_allow_html=True)
 
-        # Agents in full width - 8 columns
-        cols = st.columns(8)
-        for i, agent in enumerate(agents):
-            with cols[i]:
-                st.markdown(render_agent_card(agent, assets_dir), unsafe_allow_html=True)
+        # Spacing before chat input
+        st.markdown("<div style='height: 20px'></div>", unsafe_allow_html=True)
 
-        # Handle pending query with spinner in center
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            if st.session_state.get("pending_query"):
-                query = st.session_state.pending_query
-                st.session_state.pending_query = None
-                with st.spinner("Fetching data..."):
-                    text, chart_html, agent_name = get_demo_response(query)
-                st.session_state.demo_response = (text, chart_html, agent_name, query)
+        # Chat input under agents
+        prompt = st.chat_input("Try: 'Show me US inflation' or 'What's the unemployment rate?'", key="chat_main")
+        if prompt:
+            if DEMO_AVAILABLE:
+                st.session_state.pending_query = prompt
                 st.rerun()
-
-            # Show demo response if available
-            if st.session_state.demo_response:
-                text, chart_html, agent_name, query = st.session_state.demo_response
-                st.markdown(f"""
-                <div style="background: rgba(102, 126, 234, 0.2); padding: 10px 15px; border-radius: 10px; margin-bottom: 10px;">
-                    <strong style="color: #667eea;">You:</strong>
-                    <span style="color: #fff;"> {query}</span>
-                </div>
-                """, unsafe_allow_html=True)
-                st.markdown(f"**{agent_name}** says:")
-                st.markdown(text)
-                if chart_html:
-                    st.components.v1.html(chart_html, height=320)
-
-            # Chat input
-            prompt = st.chat_input("Try: 'Show me US inflation' or 'What's the unemployment rate?'", key="chat_main")
-            if prompt:
-                if DEMO_AVAILABLE:
-                    st.session_state.pending_query = prompt
-                    st.rerun()
 
     # Capabilities Section
     st.markdown('<h2 style="font-size: 1.6rem; font-weight: 700; color: #fff; text-align: center; margin: 15px 0 15px 0;">What Minerva Can Do</h2>', unsafe_allow_html=True)
