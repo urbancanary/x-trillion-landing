@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO Meta Tags -->
+    <title>Minerva | AI-Powered Financial Intelligence | X-Trillion</title>
+    <meta name="description" content="Minerva is an AI-powered financial intelligence platform with specialized agents for economic data, charts, and analysis. Access FRED, IMF, World Bank data through natural language.">
+    <meta name="keywords" content="AI financial analysis, economic data, FRED data, IMF data, World Bank, financial intelligence, AI agents, economic charts">
+    <meta name="author" content="X-Trillion">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://x-trillion.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://x-trillion.com/">
+    <meta property="og:title" content="Minerva | AI-Powered Financial Intelligence">
+    <meta property="og:description" content="AI agents that fetch economic data, generate charts, and analyze markets. Natural language access to FRED, IMF, and World Bank data.">
+    <meta property="og:image" content="https://assets.x-trillion.com/minerva-og.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://x-trillion.com/">
+    <meta name="twitter:title" content="Minerva | AI-Powered Financial Intelligence">
+    <meta name="twitter:description" content="AI agents that fetch economic data, generate charts, and analyze markets.">
+    <meta name="twitter:image" content="https://assets.x-trillion.com/minerva-og.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/minerva.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+            color: #fff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .nav-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px 0;
+            align-items: center;
+        }
+
+        .hero-video {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .hero-video video {
+            width: 100%;
+            display: block;
+            border-radius: 16px;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .hero-content .tagline {
+            font-size: 1.25rem;
+            color: #a0a0a0;
+            margin-bottom: 30px;
+        }
+
+        /* Agent Grid */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .agent-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .agent-role {
+            font-size: 0.7rem;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .hero-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: rgba(102, 126, 234, 0.1);
+            border-left: 3px solid #667eea;
+            padding: 20px 25px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .cta-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 36px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer strong {
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .agents-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="/" class="logo">
+                <img src="assets/minerva.png" alt="Minerva">
+                <span class="logo-text">X-Trillion</span>
+            </a>
+            <a href="https://minerva.x-trillion.com" class="nav-cta">Launch Minerva</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main>
+        <section class="hero container">
+            <div class="hero-video">
+                <video autoplay muted loop playsinline controls>
+                    <source src="https://assets.x-trillion.com/minerva-welcome.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="hero-content">
+                <h1>MINERVA</h1>
+                <p class="tagline">AI-Powered Financial Intelligence from X-Trillion</p>
+
+                <div class="agents-grid">
+                    <div class="agent-card">
+                        <img src="assets/isla.png" alt="Isla - IMF Data Agent">
+                        <div class="agent-name">Isla</div>
+                        <div class="agent-role">IMF Data</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/wade.png" alt="Wade - World Bank Agent">
+                        <div class="agent-name">Wade</div>
+                        <div class="agent-role">World Bank</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/fred.png" alt="Fred - FRED Data Agent">
+                        <div class="agent-name">Fred</div>
+                        <div class="agent-role">FRED Data</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/nina.png" alt="Nina - NFA Data Agent">
+                        <div class="agent-name">Nina</div>
+                        <div class="agent-role">NFA Data</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/clara.png" alt="Clara - Charts Agent">
+                        <div class="agent-name">Clara</div>
+                        <div class="agent-role">Charts</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/polly.png" alt="Polly - Fact-Check Agent">
+                        <div class="agent-name">Polly</div>
+                        <div class="agent-role">Fact-Check</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/wren.png" alt="Wren - Reports Agent">
+                        <div class="agent-name">Wren</div>
+                        <div class="agent-role">Reports</div>
+                    </div>
+                    <div class="agent-card">
+                        <img src="assets/grace.png" alt="Grace - General Agent">
+                        <div class="agent-name">Grace</div>
+                        <div class="agent-role">General</div>
+                    </div>
+                </div>
+
+                <a href="https://minerva.x-trillion.com" class="hero-cta">Try Minerva Now</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features container">
+            <h2 class="section-title">What Minerva Can Do</h2>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-title">Natural Language Queries</div>
+                    <div class="feature-desc">Ask questions in plain English. "What's US inflation?" or "Show me Brazil's GDP growth from IMF."</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">Multi-Source Economic Data</div>
+                    <div class="feature-desc">Access data from FRED (US), IMF (190+ countries), World Bank (development indicators), and Net Foreign Assets.</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">Dynamic Chart Generation</div>
+                    <div class="feature-desc">Clara creates professional visualizations - line charts, bar charts, comparisons - tailored to your query.</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">Political Fact-Checking</div>
+                    <div class="feature-desc">Polly analyzes political claims and provides fact-checked analysis with reliable sources.</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">Report Generation</div>
+                    <div class="feature-desc">Wren builds premium reports combining data, charts, and analysis into polished documents.</div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">Agent Collaboration</div>
+                    <div class="feature-desc">Specialized agents work together - ask a complex question and the right experts collaborate to answer it.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section container">
+            <h2>Ready to transform your financial research?</h2>
+            <div class="cta-buttons">
+                <a href="https://minerva.x-trillion.com" class="btn-primary">Launch Minerva</a>
+                <a href="mailto:hello@x-trillion.com" class="btn-secondary">Contact Us</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <strong>X-Trillion</strong> | AI-Powered Financial Intelligence | &copy; 2025
+    </footer>
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Minerva",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "description": "AI-powered financial intelligence platform with specialized agents for economic data analysis",
+        "url": "https://minerva.x-trillion.com",
+        "author": {
+            "@type": "Organization",
+            "name": "X-Trillion",
+            "url": "https://x-trillion.com"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+</body>
+</html>
